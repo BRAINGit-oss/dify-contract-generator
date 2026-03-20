@@ -1,0 +1,208 @@
+app:
+  description: 从Excel读取变量并填充Word模板，批量生成合同
+  icon: 📄
+  icon_background: '#E4F2FF'
+  mode: workflow
+  name: 合同自动生成器
+  use_icon_as_answer_icon: false
+kind: app
+version: 0.1.4
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .xlsx
+      - .xls
+      - .docx
+      allowed_file_types:
+      - custom
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: true
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 50
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: false
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        sourceType: start
+        targetType: http-request
+      id: 1001-source-1002-target
+      source: '1001'
+      sourceHandle: source
+      target: '1002'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: http-request
+        targetType: end
+      id: 1002-source-1003-target
+      source: '1002'
+      sourceHandle: source
+      target: '1003'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 开始
+        type: start
+        variables:
+        - allowed_file_extensions:
+          - .xlsx
+          - .xls
+          allowed_file_types:
+          - custom
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          label: Excel数据文件
+          max_length: 48
+          options: []
+          required: true
+          type: file
+          variable: excel_file
+        - allowed_file_extensions:
+          - .docx
+          allowed_file_types:
+          - custom
+          allowed_file_upload_methods:
+          - local_file
+          - remote_url
+          label: Word模板文件
+          max_length: 48
+          options: []
+          required: true
+          type: file
+          variable: template_file
+        - default: https://your-domain.com/generate-contracts
+          hint: 云端Dify请填写可公网访问的HTTPS地址
+          label: 生成服务地址
+          max_length: 256
+          options: []
+          placeholder: https://your-domain.com/generate-contracts
+          required: true
+          type: text-input
+          variable: generator_url
+      height: 210
+      id: '1001'
+      position:
+        x: 30
+        y: 245
+      positionAbsolute:
+        x: 30
+        y: 245
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data:
+          - id: key-value-1
+            key: excel_file
+            type: file
+            value: '{{#1001.excel_file#}}'
+          - id: key-value-2
+            key: template_file
+            type: file
+            value: '{{#1001.template_file#}}'
+          - id: key-value-3
+            key: output_format
+            type: text
+            value: docx
+          type: form-data
+        desc: 调用外部服务进行批量合同生成
+        headers: ''
+        method: post
+        params: ''
+        selected: false
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: 生成合同
+        type: http-request
+        url: '{{#1001.generator_url#}}'
+        variables: []
+      height: 140
+      id: '1002'
+      position:
+        x: 334
+        y: 245
+      positionAbsolute:
+        x: 334
+        y: 245
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '1002'
+          - status_code
+          variable: status_code
+        - value_selector:
+          - '1002'
+          - body
+          variable: result
+        selected: false
+        title: 结束
+        type: end
+      height: 120
+      id: '1003'
+      position:
+        x: 638
+        y: 245
+      positionAbsolute:
+        x: 638
+        y: 245
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 80
+      y: 70
+      zoom: 0.9
