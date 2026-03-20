@@ -117,6 +117,24 @@ workflow:
           required: true
           type: text-input
           variable: generator_url
+        - default: change-me-in-dify
+          hint: 对应服务端环境变量 API_TOKEN
+          label: API访问令牌
+          max_length: 256
+          options: []
+          placeholder: change-me-in-dify
+          required: true
+          type: text-input
+          variable: api_token
+        - default: default
+          hint: 建议按企业租户或部门标识
+          label: 租户ID
+          max_length: 64
+          options: []
+          placeholder: finance-dept
+          required: true
+          type: text-input
+          variable: tenant_id
       height: 210
       id: '1001'
       position:
@@ -150,7 +168,9 @@ workflow:
             value: docx
           type: form-data
         desc: 调用外部服务进行批量合同生成
-        headers: ''
+        headers: 'Authorization:Bearer {{#1001.api_token#}}
+
+          X-Tenant-ID:{{#1001.tenant_id#}}'
         method: post
         params: ''
         selected: false
